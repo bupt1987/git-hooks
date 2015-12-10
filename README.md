@@ -1,6 +1,11 @@
 pre-commit hook
 ==================
 
+依赖
+=======
+
+	composer require fp-coding-standards/fpcs
+
 功能简述
 ========
 1、在提交代码（git commit）到git库时，本钩子被触发。  
