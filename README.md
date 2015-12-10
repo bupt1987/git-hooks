@@ -20,17 +20,17 @@ pre-commit hook
     YOUR_PROJECT_ROOT/
       |—— git_hook
       		|—— pre-commit
-      		|——ruleset.xml
+      		|—— fp-ruleset.xml
+      		|—— install
       		|—— vendor/
            		|——bin/
                 	|——phpcs
                 	|——phpcbf
 
 1、安装依赖PHP_CodeSniffer，定义代码样式，本例中使用[FunPlus-Coding-Standards](https://github.com/funplus/FunPlus-Coding-Standards)。  
-2、git中注册钩子。
+2、安装钩子。
 
-    cd YOUR_PROJECT_ROOT/.git/hook/
-    ln -s ../../git_hook/pre-commit .
+    YOUR_PROJECT_ROOT/git_hook/install
 
 
 
@@ -41,7 +41,7 @@ pre-commit hook
     define('PROJECT_ROOT', YOUR_PROJECT_ROOT); //项目的路径
     define('PHP_CS_CHECK_CMD', PROJECT_ROOT.'/vendor/bin/phpcs'); //执行检查的命令
     define('PHP_CS_FIX_CMD', PROJECT_ROOT.'/vendor/bin/phpcbf'); //修复的命令
-    define('PHP_CS_RULESET', __DIR__.'/ruleset.xml'); //检查和修复使用的rule set，可以为""
+    define('PHP_CS_RULESET', __DIR__.'/fp-ruleset.xml'); //检查和修复使用的rule set，可以为""
 流程相关
 
     define('AUTO_FIX_CS', TRUE);    //是否自动修复文件
