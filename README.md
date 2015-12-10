@@ -18,7 +18,7 @@ Git Hooks
 假设目录结构：
 
     YOUR_PROJECT_ROOT/
-      |—— git_hook
+      |—— git-hooks
       		|—— pre-commit
       		|—— fp-ruleset.xml
       		|—— install
@@ -30,7 +30,7 @@ Git Hooks
 1、安装依赖PHP_CodeSniffer，定义代码样式，本例中使用[FunPlus-Coding-Standards](https://github.com/funplus/FunPlus-Coding-Standards)。  
 2、安装钩子。
 
-    YOUR_PROJECT_ROOT/git_hook/install
+    YOUR_PROJECT_ROOT/git-hooks/install
 
 
 
