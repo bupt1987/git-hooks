@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
-cd `dirname $0`
-cd ..
+sDir=$(cd `dirname $0`; pwd)
+sHookDir=$(cd `dirname ${sDir}`; pwd)'/.git/hooks/'
 
-composer require fp-coding-standards/fpcs
+if [ -d ${sHookDir} ]; then
+	cd ${sDir}
+	composer require fp-coding-standards/fpcs
 
-cd .git/hooks/
-
-ln -sf ../../git_hook/pre-commit .
-
+	cd ${sHookDir}
+	ln -sf ../../git_hook/pre-commit .
+	echo 'done'
+else
+	echo ${sHookDir}' is not exist'
+	exit 1
+fi
