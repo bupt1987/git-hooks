@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 cd `dirname $0`
-cd ../.git/hooks/
+cd ..
+
+composer require fp-coding-standards/fpcs
+
+cd .git/hooks/
 
 ln -sf ../../git_hook/pre-commit .
 
