@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+cd `dirname $0`
+cd ../.git/hooks/
+
+ln -sf ../../git_hook/pre-commit .
+
