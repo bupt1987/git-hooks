@@ -1,14 +1,17 @@
 #!/usr/bin/env bash
 sDir=$(cd `dirname $0`; pwd)
-sHookDir=$(cd `dirname ${sDir}`; pwd)'/.git/hooks/'
+sProjectDir=$(cd `dirname ${sDir}`; pwd)
+sHookDir=${sProjectDir}'/.git/hooks/'
 
 if [ -d ${sHookDir} ]; then
-	cd ${sDir}
-	composer require fp-coding-standards/fpcs
+	cd ${sProjectDir}
+	composer require fp-coding-standards/fpcs --update-no-dev
+	vendor/bin/phpcs --config-set installed_paths vendor/fp-coding-standards/fpcs
 
 	cd ${sHookDir}
 	ln -sf ../../git_hook/pre-commit .
-	echo 'done'
+	echo
+	echo 'install success'
 else
 	echo ${sHookDir}' is not exist'
 	exit 1

@@ -39,8 +39,8 @@ pre-commit hook
 环境相关
 
     define('PROJECT_ROOT', YOUR_PROJECT_ROOT); //项目的路径
-    define('PHP_CS_CHECK_CMD', __DIR__.'/vendor/bin/phpcs'); //执行检查的命令
-    define('PHP_CS_FIX_CMD', __DIR__.'/vendor/bin/phpcbf'); //修复的命令
+    define('PHP_CS_CHECK_CMD', PROJECT_ROOT.'/vendor/bin/phpcs'); //执行检查的命令
+    define('PHP_CS_FIX_CMD', PROJECT_ROOT.'/vendor/bin/phpcbf'); //修复的命令
     define('PHP_CS_RULESET', __DIR__.'/ruleset.xml'); //检查和修复使用的rule set，可以为""
 流程相关
 
