@@ -1,0 +1,129 @@
+#!/usr/bin/env php
+<?php
+/**
+ * ci时自动检查并尝试修复代码格式
+ */
+//项目的路径
+define('PROJECT_ROOT', dirname(__DIR__));
+//执行检查的命令
+define('PHP_CS_CHECK_CMD', PROJECT_ROOT . '/vendor/bin/phpcs');
+//修复的命令
+define('PHP_CS_FIX_CMD', PROJECT_ROOT . '/vendor/bin/phpcbf');
+//检查和修复使用的rule set，为空时使用默认的
+define('PHP_CS_RULESET', PROJECT_ROOT . '/git_hook/fp-ruleset.xml');
+
+//是否自动修复文件
+define('AUTO_FIX_CS', TRUE);
+
+//获取需要提交的php文件
+$lChangeFile = PreCommit::getChangeFile();
+
+if (!$lChangeFile) {
+	exit(0);
+}
+
+$bError = TRUE;
+do {
+
+	if (!AUTO_FIX_CS) {
+		//如果不自动修复，就只做phpcs
+		PreCommit::displayTitle('PHP code style check:');
+		$lFail = PreCommit::csCheck($lChangeFile);
+	} else {
+		//如果自动修复，就直接先调用phpcbf，再phpcs
+		PreCommit::displayTitle('PHP code style check and Try to fix:');
+		foreach ($lChangeFile as $iKey => $lFilePath) {
+			$sRealPath = PROJECT_ROOT . '/' . $lFilePath;
+			$bOk = PreCommit::csCheckOne($sRealPath)[1];
+			if ($bOk) {
+				echo 'Check: ', $lFilePath . " OK\n";
+				unset($lChangeFile[$iKey]);
+			} else {
+				echo 'Fix:   ', $lFilePath;
+				PreCommit::fixPhpFile($sRealPath);
+				echo " DONE\n";
+			}
+		}
+		$lFail = PreCommit::csCheck($lChangeFile);
+	}
+
+	//如果有错误则终止
+	if ($lFail) {
+		break;
+	}
+
+	//可以提交
+	PreCommit::displayTitle('Commit to git');
+	$bError = FALSE;
+
+} while (FALSE);
+
+exit($bError ? 1 : 0);
+
+
+class PreCommit {
+
+	static function displayTitle($sMsg) {
+		static $iNum = 0;
+		$iNum++;
+		self::colorEcho("\n${iNum}. ${sMsg}", 'green');
+	}
+
+	static function getChangeFile() {
+		$lDiffFile = [];
+		exec('git diff --cached --name-only ' . PROJECT_ROOT, $lDiffFile, $retVal);
+		//过滤掉非php文件，
+		$lChangeFile = array_filter(
+			$lDiffFile,
+			function ($sFileName) {
+				return is_file(PROJECT_ROOT . '/' . $sFileName) && substr($sFileName, -4) === '.php';
+			}
+		);
+		return $lChangeFile;
+	}
+
+	static function csCheck($lFileList) {
+		$lFail = [];
+		foreach ($lFileList as $lFilePath) {
+			list($lOutput, $bOk) = self::csCheckOne(PROJECT_ROOT . '/' . $lFilePath);
+			if (!$bOk) {
+				echo implode("\n", $lOutput);
+				$lFail[] = $lFilePath;
+			}
+		}
+		if ($lFail) {
+			self::colorEcho("\n\nSummary Error : " . count($lFail) . ' file(s)', 'violet');
+		}
+		return $lFail;
+	}
+
+	static function csCheckOne($sFile) {
+		exec(PHP_CS_CHECK_CMD . (PHP_CS_RULESET ? ' -n --standard=' . PHP_CS_RULESET . ' ' : ' ') . $sFile, $lOutput, $retVal);
+		return [
+			$lOutput,
+			$retVal === 0,
+		];
+	}
+
+	static function fixPhpFile($sPath) {
+		exec(PHP_CS_FIX_CMD . (PHP_CS_RULESET ? ' --standard=' . PHP_CS_RULESET . ' ' : ' ') . $sPath, $lOutput);
+	}
+
+	static function colorEcho($sContent, $color = 'white') {
+		static $lColor = [
+			'black' => '30',
+			'red' => '31',
+			'green' => '32',
+			'yellow' => '33',
+			'blue' => '34',
+			'violet' => '35',
+			'cyan' => '36',
+			'white' => '37',
+		];
+
+		$color = isset($lColor[$color]) ? $lColor[$color] : 37;
+		$sCmd = "echo \"\033[" . $color . "m" . $sContent . "\n" . " \033[0m\"";
+		passthru($sCmd);
+	}
+
+}
