@@ -5,14 +5,18 @@ sHookDir=${sProjectDir}'/.git/hooks/'
 
 if [ -d ${sHookDir} ]; then
 	cd ${sProjectDir}
-	composer require fp-coding-standards/fpcs --update-no-dev
-	vendor/bin/phpcs --config-set installed_paths vendor/fp-coding-standards/fpcs
+
+	if [ ! -d 'vendor/fp-coding-standards/fpcs' ]; then
+		composer require fp-coding-standards/fpcs --update-no-dev
+		vendor/bin/phpcs --config-set installed_paths vendor/fp-coding-standards/fpcs
+	fi
 
 	cd ${sHookDir}
 	ln -sf ../../git-hooks/pre-commit .
 	echo
 	echo 'install success'
 else
+	echo
 	echo ${sHookDir}' is not exist'
 	exit 1
 fi
