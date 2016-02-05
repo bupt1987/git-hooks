@@ -79,6 +79,10 @@ class PreCommit {
 		$lChangeFile = array_filter(
 			$lDiffFile,
 			function ($sFileName) {
+				//过滤vendor目录下的代码
+				if(strpos($sFileName, 'vendor/') === 0) {
+					return FALSE;
+				}	
 				return is_file(PROJECT_ROOT . '/' . $sFileName) && substr($sFileName, -4) === '.php';
 			}
 		);
