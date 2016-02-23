@@ -25,7 +25,7 @@ if (!$lChangeFile) {
 	exit(0);
 }
 
-$bError = TRUE;
+$bError = FALSE;
 do {
 
 	if (!AUTO_FIX_CS) {
@@ -42,6 +42,7 @@ do {
 				echo 'Check: ', $lFilePath . " OK\n";
 				unset($lChangeFile[$iKey]);
 			} else {
+				$bError = TRUE;
 				echo 'Fix:   ', $lFilePath;
 				PreCommit::fixPhpFile($sRealPath);
 				echo " DONE\n";
@@ -52,12 +53,17 @@ do {
 
 	//如果有错误则终止
 	if ($lFail) {
+		$bError = TRUE;
 		break;
 	}
 
-	//可以提交
-	PreCommit::displayTitle('Commit to git');
-	$bError = FALSE;
+	if($bError) {
+		//可以提交
+		PreCommit::displayTitle('Have fixed, please commit again');
+	} else {
+		//可以提交
+		PreCommit::displayTitle('Commit to git');
+	}
 
 } while (FALSE);
 
@@ -79,10 +85,9 @@ class PreCommit {
 		$lChangeFile = array_filter(
 			$lDiffFile,
 			function ($sFileName) {
-				//过滤vendor目录下的代码
 				if(strpos($sFileName, 'vendor/') === 0) {
 					return FALSE;
-				}	
+				}
 				return is_file(PROJECT_ROOT . '/' . $sFileName) && substr($sFileName, -4) === '.php';
 			}
 		);
