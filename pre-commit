@@ -8,12 +8,12 @@ define('PHP_CS_RULESET', __DIR__ . '/fp-ruleset.xml'); //检查和修复使用�
 
 define('AUTO_FIX_CS', TRUE); //是否自动修复文件
 
-if(!is_file(PHP_CS_CHECK_CMD) || !is_file(PHP_CS_FIX_CMD) ) {
+if (!is_file(PHP_CS_CHECK_CMD) || !is_file(PHP_CS_FIX_CMD)) {
 	PreCommit::colorEcho('Inspection or repair script does not exist, the hook is not executed', 'yellow');
 	exit(0);
 }
 
-if(!is_file(PHP_CS_RULESET)) {
+if (!is_file(PHP_CS_RULESET)) {
 	PreCommit::colorEcho('rule set configuration file does not exist, the hook is not executed', 'yellow');
 	exit(0);
 }
@@ -57,7 +57,7 @@ do {
 		break;
 	}
 
-	if($bError) {
+	if ($bError) {
 		//可以提交
 		PreCommit::displayTitle('Have fixed, please commit again');
 	} else {
@@ -72,29 +72,34 @@ exit($bError ? 1 : 0);
 
 class PreCommit {
 
-	static function displayTitle($sMsg) {
+	public static function displayTitle($sMsg) {
 		static $iNum = 0;
 		$iNum++;
 		self::colorEcho("\n${iNum}. ${sMsg}", 'green');
 	}
 
-	static function getChangeFile() {
+	public static function getChangeFile() {
+		$lExclude = require_once __DIR__ . '/exclude.php';
 		$lDiffFile = [];
 		exec('git diff --cached --name-only ' . PROJECT_ROOT, $lDiffFile, $retVal);
 		//过滤掉非php文件，
 		$lChangeFile = array_filter(
 			$lDiffFile,
-			function ($sFileName) {
-				if(strpos($sFileName, 'vendor/') === 0) {
-					return FALSE;
+			function($sFileName) use ($lExclude) {
+				foreach ($lExclude as $sExclude) {
+					if (strpos(PROJECT_ROOT . '/' . $sFileName, PROJECT_ROOT . '/' . ltrim($sExclude, '/')) === 0) {
+						return FALSE;
+					}
 				}
+
 				return is_file(PROJECT_ROOT . '/' . $sFileName) && substr($sFileName, -4) === '.php';
 			}
 		);
+
 		return $lChangeFile;
 	}
 
-	static function csCheck($lFileList) {
+	public static function csCheck($lFileList) {
 		$lFail = [];
 		foreach ($lFileList as $lFilePath) {
 			list($lOutput, $bOk) = self::csCheckOne(PROJECT_ROOT . '/' . $lFilePath);
@@ -106,22 +111,24 @@ class PreCommit {
 		if ($lFail) {
 			self::colorEcho("\n\nSummary Error : " . count($lFail) . ' file(s)', 'violet');
 		}
+
 		return $lFail;
 	}
 
-	static function csCheckOne($sFile) {
+	public static function csCheckOne($sFile) {
 		exec(PHP_CS_CHECK_CMD . (PHP_CS_RULESET ? ' -n --standard=' . PHP_CS_RULESET . ' ' : ' ') . $sFile, $lOutput, $retVal);
+
 		return [
 			$lOutput,
 			$retVal === 0,
 		];
 	}
 
-	static function fixPhpFile($sPath) {
+	public static function fixPhpFile($sPath) {
 		exec(PHP_CS_FIX_CMD . (PHP_CS_RULESET ? ' --standard=' . PHP_CS_RULESET . ' ' : ' ') . $sPath, $lOutput);
 	}
 
-	static function colorEcho($sContent, $color = 'white') {
+	public static function colorEcho($sContent, $color = 'white') {
 		static $lColor = [
 			'black' => '30',
 			'red' => '31',
