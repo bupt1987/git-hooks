@@ -1,7 +1,13 @@
 #!/usr/bin/env php
 <?php
 
-define('PROJECT_ROOT', dirname(__DIR__)); //项目的路径
+//项目的路径
+if(is_dir(dirname(__DIR__) . '/vendor')) {
+	define('PROJECT_ROOT', dirname(__DIR__));
+} else {
+	define('PROJECT_ROOT', dirname(dirname(dirname(__DIR__))));
+}
+
 define('PHP_CS_CHECK_CMD', PROJECT_ROOT . '/vendor/bin/phpcs'); //执行检查的命令
 define('PHP_CS_FIX_CMD', PROJECT_ROOT . '/vendor/bin/phpcbf'); //修复的命令
 define('PHP_CS_RULESET', __DIR__ . '/fp-ruleset.xml'); //检查和修复使用的rule set，为空时使用默认的
