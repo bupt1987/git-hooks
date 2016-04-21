@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 sDir=$(cd `dirname $0`; pwd)
-sProjectDir=$(cd `dirname ${sDir}`; pwd)
+echo ${sDir}
+sProjectDir=$(cd `dirname $(dirname ${sDir})`; pwd)
+
 sHookDir=${sProjectDir}'/.git/hooks/'
 
 if [ -d ${sHookDir} ]; then

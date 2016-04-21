@@ -1,20 +1,20 @@
 {
-	"name"       : "bupt1987/git-hooks",
+	"name": "bupt1987/git-hooks",
 	"description": "php git commit hooks",
-	"keywords"   : ["git", "git hooks"],
-	"license"    : "MIT",
-	"authors"    : [
+	"keywords": [
+		"git",
+		"git hooks"
+	],
+	"license": "MIT",
+	"authors": [
 		{
-			"name"    : "Junjie.Ning"
+			"name": "Junjie.Ning"
 		}
 	],
 	"require": {
-		"fp-coding-standards/fpcs" : "^1.1"
+		"fp-coding-standards/fpcs": "^1.1"
 	},
-	"scripts"    : {
-		"post-install-cmd": [
-			"ln -sf vendor/bupt1987/git-hooks .",
-			"git-hooks/install"
-		]
-	}
+	"bin": [
+		"git-hooks-install"
+	]
 }
