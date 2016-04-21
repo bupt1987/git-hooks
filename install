@@ -7,7 +7,7 @@ if [ -d ${sHookDir} ]; then
 	cd ${sProjectDir}
 
 	if [ ! -d 'vendor/fp-coding-standards/fpcs' ]; then
-		composer require fp-coding-standards/fpcs --update-no-dev
+		composer require fp-coding-standards/fpcs --dev
 		vendor/bin/phpcs --config-set installed_paths vendor/fp-coding-standards/fpcs
 	fi
 
