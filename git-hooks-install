@@ -8,7 +8,7 @@ if [ -d ${sHookDir} ]; then
 	vendor/bin/phpcs --config-set installed_paths vendor/fp-coding-standards/fpcs
 
 	cd ${sHookDir}
-	ln -sf ../../vendor/funplus/git-hooks/pre-commit .
+	ln -sf ../../vendor/fp-coding-standards/git-hooks/pre-commit .
 	echo
 	echo 'install success'
 else

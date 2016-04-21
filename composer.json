@@ -1,5 +1,5 @@
 {
-	"name": "funplus/git-hooks",
+	"name": "fp-coding-standards/git-hooks",
 	"description": "php git commit hooks",
 	"keywords": [
 		"git",
