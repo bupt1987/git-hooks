@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 sDir=$(cd `dirname $0`; pwd)
-echo ${sDir}
 sProjectDir=$(cd `dirname $(dirname ${sDir})`; pwd)
-
 sHookDir=${sProjectDir}'/.git/hooks/'
 
 if [ -d ${sHookDir} ]; then
@@ -10,7 +8,7 @@ if [ -d ${sHookDir} ]; then
 	vendor/bin/phpcs --config-set installed_paths vendor/fp-coding-standards/fpcs
 
 	cd ${sHookDir}
-	ln -sf ../../git-hooks/pre-commit .
+	ln -sf ../../vendor/bupt1987/git-hooks/pre-commit .
 	echo
 	echo 'install success'
 else
