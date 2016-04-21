@@ -16,5 +16,10 @@
 	},
 	"bin": [
 		"git-hooks-install"
-	]
+	],
+	"scripts": {
+		"post-install-cmd": [
+			"cd vendor/bin/ && ln -sf ../../git-hooks-install ."
+		]
+	}
 }
