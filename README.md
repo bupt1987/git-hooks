@@ -1,5 +1,6 @@
 Git Hooks
 ==================
+[![Total Downloads](https://img.shields.io/badge/downloads-9.5k-green.svg)](https://packagist.org/packages/fp-coding-standards/git-hooks)
 
 依赖
 =======
